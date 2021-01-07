@@ -8,7 +8,6 @@ import io.ktor.routing.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.html.HTML
 import kotlinx.html.a
 import kotlinx.html.body
@@ -20,12 +19,9 @@ import kotlinx.html.onClick
 import kotlinx.html.script
 import kotlinx.html.title
 import mu.KLogging
-import kotlin.time.ExperimentalTime
 
 object Server : KLogging() {
 
-  @ExperimentalTime
-  @ExperimentalCoroutinesApi
   @JvmStatic
   fun main(args: Array<String>) {
     embeddedServer(CIO, port = 8080, host = "127.0.0.1") {
@@ -110,6 +106,10 @@ object Server : KLogging() {
     body {
       div {
         id = "time"
+      }
+
+      div {
+        id = "inputfield"
       }
 
       button {

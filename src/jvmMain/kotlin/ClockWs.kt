@@ -1,7 +1,6 @@
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.mapNotNull
@@ -12,19 +11,15 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.LinkedHashSet
 import kotlin.concurrent.timer
-import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
 import kotlin.time.seconds
 
-@ExperimentalTime
 object ClockWs : KLogging() {
-  @ExperimentalTime
   private val clock = TimeSource.Monotonic
   private val wsConnections = Collections.synchronizedSet(LinkedHashSet<SessionContext>())
   private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
   data class SessionContext(val wsSession: DefaultWebSocketServerSession) {
-    @ExperimentalTime
     val start = clock.markNow()
   }
 
@@ -44,7 +39,6 @@ object ClockWs : KLogging() {
     }
   }
 
-  @ExperimentalCoroutinesApi
   fun Routing.clockWsEndpoint() {
     webSocket("/clock") {
       val wsContext = SessionContext(this)
@@ -52,13 +46,13 @@ object ClockWs : KLogging() {
         outgoing.invokeOnClose {
           incoming.cancel()
         }
-
         wsConnections += wsContext
-
         incoming
           .consumeAsFlow()
           .mapNotNull { it as? Frame.Text }
-          .collect {}
+          .collect {
+            logger.info { String(it.data) }
+          }
       } finally {
         wsConnections -= wsContext
         closeChannels()
@@ -72,5 +66,4 @@ object ClockWs : KLogging() {
     outgoing.close()
     incoming.cancel()
   }
-
 }

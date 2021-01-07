@@ -9,7 +9,7 @@ val serialization_version: String by project
 plugins {
   application
   kotlin("multiplatform") version "1.4.30-M1"
-  id("org.jetbrains.kotlin.plugin.serialization") version "1.4.30-M1"
+  kotlin("plugin.serialization") version "1.4.30-M1"
   id("com.github.ben-manes.versions") version "0.36.0"
 }
 
@@ -19,8 +19,8 @@ version = "1.0-SNAPSHOT"
 repositories {
   maven { url = uri("https://dl.bintray.com/kotlin/kotlinx") }
   maven { url = uri("https://dl.bintray.com/kotlin/ktor") }
-  jcenter()
   mavenCentral()
+  jcenter()
 }
 
 kotlin {
@@ -28,6 +28,7 @@ kotlin {
     compilations.all {
       kotlinOptions.jvmTarget = "1.8"
     }
+
     testRuns["test"].executionTask.configure {
       useJUnitPlatform()
     }
@@ -94,6 +95,15 @@ kotlin {
       dependencies {
         implementation(kotlin("test-js"))
       }
+    }
+
+    all {
+      languageSettings
+        .apply {
+          useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+          //useExperimentalAnnotation("io.ktor.util.KtorExperimentalAPI")
+          useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
+        }
     }
   }
 }
