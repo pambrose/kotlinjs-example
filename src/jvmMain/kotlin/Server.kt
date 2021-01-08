@@ -1,14 +1,14 @@
 import AddItemsPage.addItemsPage
 import ButtonsPage.buttonsPage
-import ChatPage.chatPage
-import ChatWs.chatWsEndpoint
 import ClockPage.clockPage
 import ClockWs.clockWsEndpoint
 import EndPoint.ADDITEMS
 import EndPoint.BUTTONS
-import EndPoint.CHAT
 import EndPoint.CLOCK
+import EndPoint.KEYSTROKE
 import HomePage.homePage
+import KeystrokeSpyPage.chatPage
+import KeystrokeSpyWs.chatWsEndpoint
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.html.*
@@ -25,9 +25,6 @@ import kotlinx.css.body
 import kotlinx.css.color
 import kotlinx.css.marginTop
 import kotlinx.css.px
-import kotlinx.html.CommonAttributeGroupFacade
-import kotlinx.html.FlowOrMetaDataContent
-import kotlinx.html.style
 import mu.KLogging
 
 object Server : KLogging() {
@@ -55,7 +52,7 @@ object Server : KLogging() {
           call.respondHtml { clockPage() }
         }
 
-        get(CHAT.asPath()) {
+        get(KEYSTROKE.asPath()) {
           call.respondHtml { chatPage() }
         }
 
@@ -87,15 +84,15 @@ object Server : KLogging() {
     }.start(wait = true)
   }
 
-  fun FlowOrMetaDataContent.styleCss(builder: CSSBuilder.() -> Unit) {
-    style(type = ContentType.Text.CSS.toString()) {
-      +CSSBuilder().apply(builder).toString()
-    }
-  }
-
-  fun CommonAttributeGroupFacade.style(builder: CSSBuilder.() -> Unit) {
-    style = CSSBuilder().apply(builder).toString().trim()
-  }
+//  fun FlowOrMetaDataContent.styleCss(builder: CSSBuilder.() -> Unit) {
+//    style(type = ContentType.Text.CSS.toString()) {
+//      +CSSBuilder().apply(builder).toString()
+//    }
+//  }
+//
+//  fun CommonAttributeGroupFacade.style(builder: CSSBuilder.() -> Unit) {
+//    style = CSSBuilder().apply(builder).toString().trim()
+//  }
 
   suspend inline fun ApplicationCall.respondCss(builder: CSSBuilder.() -> Unit) {
     respondText(CSSBuilder().apply(builder).toString(), ContentType.Text.CSS)

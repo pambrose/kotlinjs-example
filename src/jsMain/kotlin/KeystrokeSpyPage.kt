@@ -1,4 +1,4 @@
-import EndPoint.CHAT
+import EndPoint.KEYSTROKE
 import kotlinx.browser.document
 import kotlinx.html.dom.append
 import kotlinx.html.js.input
@@ -7,24 +7,26 @@ import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.WebSocket
 import org.w3c.dom.events.KeyboardEvent
 
-fun chatPage() {
+fun keystrokeSpyPage() {
   val host = document.location?.origin ?: "Missing document.location"
   host.replaceFirst("http:", "ws:")
   val ws =
-    WebSocket("${host.replaceFirst("http:", "ws:")}${CHAT.asPath()}").apply {
-      onopen = { send("start") }
+    WebSocket("${host.replaceFirst("http:", "ws:")}${KEYSTROKE.asPath()}").apply {
+      onopen = { }
       onmessage = {
-        document.getElementById("time")?.innerHTML = ClockMessage.fromJson(it.data as String).msg
+        val msg = KeystrokeMessage.fromJson(it.data as String).msg
+        val html = document.getElementById("outputfield")?.innerHTML.toString()
+        document.getElementById("outputfield")?.innerHTML = msg + "\n" + html
         Unit  // Unit is here because lambda needs to return a dynamic
       }
     }
 
-  document.getElementById("chatfield")?.append {
+  document.getElementById("inputfield")?.append {
     input {
       onKeyPressFunction = { event ->
         val target = event.target
         if (target is HTMLInputElement && event is KeyboardEvent) {
-          println(event.key)
+          //println(event.key)
           ws.send(event.key)
         }
       }

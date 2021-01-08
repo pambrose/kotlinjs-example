@@ -1,7 +1,7 @@
 import EndPoint.ADDITEMS
 import EndPoint.BUTTONS
-import EndPoint.CHAT
 import EndPoint.CLOCK
+import EndPoint.KEYSTROKE
 import kotlinx.html.HTML
 import kotlinx.html.a
 import kotlinx.html.body
@@ -35,7 +35,7 @@ object HomePage {
           a { href = CLOCK.asPath(); +"Clock Page" }
         }
         li {
-          a { href = CHAT.asPath(); +"Chat Page" }
+          a { href = KEYSTROKE.asPath(); +"Keystroke Spy Page" }
         }
       }
     }

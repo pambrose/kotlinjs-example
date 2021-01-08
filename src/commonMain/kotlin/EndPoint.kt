@@ -2,9 +2,8 @@ enum class EndPoint {
 
   BUTTONS,
   ADDITEMS,
-  CHAT,
+  KEYSTROKE,
   CLOCK;
 
   fun asPath() = "/${name.toLowerCase()}"
-
 }

@@ -1,7 +1,7 @@
 import EndPoint.ADDITEMS
 import EndPoint.BUTTONS
-import EndPoint.CHAT
 import EndPoint.CLOCK
+import EndPoint.KEYSTROKE
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.html.div
@@ -17,7 +17,7 @@ fun main() {
       BUTTONS.asPath() -> buttonsPage()
       ADDITEMS.asPath() -> addItemsPage()
       CLOCK.asPath() -> clockPage()
-      CHAT.asPath() -> chatPage()
+      KEYSTROKE.asPath() -> keystrokeSpyPage()
       else -> {
       }
     }

@@ -1,4 +1,4 @@
-import EndPoint.CHAT
+import EndPoint.KEYSTROKE
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
@@ -9,13 +9,13 @@ import mu.KLogging
 import java.util.*
 import kotlin.collections.LinkedHashSet
 
-object ChatWs : KLogging() {
+object KeystrokeSpyWs : KLogging() {
   private val wsConnections = Collections.synchronizedSet(LinkedHashSet<SessionContext>())
 
   data class SessionContext(val wsSession: DefaultWebSocketServerSession)
 
   fun Routing.chatWsEndpoint() {
-    webSocket(CHAT.asPath()) {
+    webSocket(KEYSTROKE.asPath()) {
       val wsContext = SessionContext(this)
       try {
         outgoing.invokeOnClose {
@@ -26,13 +26,16 @@ object ChatWs : KLogging() {
           .consumeAsFlow()
           .mapNotNull { it as? Frame.Text }
           .collect {
-            logger.info { String(it.data) }
+            val str = String(it.data)
+            logger.info { str }
+            val json = KeystrokeMessage("Server saw a $str").toJson()
+            outgoing.send(Frame.Text(json))
           }
       } finally {
         wsConnections -= wsContext
         closeChannels()
         close(CloseReason(CloseReason.Codes.GOING_AWAY, "Client disconnected"))
-        logger.info { "Closed chat websocket: ${wsConnections.size}" }
+        logger.info { "Closed keystroke spy websocket: ${wsConnections.size}" }
       }
     }
   }
@@ -41,5 +44,4 @@ object ChatWs : KLogging() {
     outgoing.close()
     incoming.cancel()
   }
-
 }
