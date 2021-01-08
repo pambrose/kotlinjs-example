@@ -1,4 +1,4 @@
-import EndPoint.CLOCK
+import EndPoint.CHAT
 import kotlinx.browser.document
 import kotlinx.html.dom.append
 import kotlinx.html.js.input
@@ -7,11 +7,11 @@ import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.WebSocket
 import org.w3c.dom.events.KeyboardEvent
 
-fun clockPage() {
+fun chatPage() {
   val host = document.location?.origin ?: "Missing document.location"
   host.replaceFirst("http:", "ws:")
   val ws =
-    WebSocket("${host.replaceFirst("http:", "ws:")}${CLOCK.asPath()}").apply {
+    WebSocket("${host.replaceFirst("http:", "ws:")}${CHAT.asPath()}").apply {
       onopen = { send("start") }
       onmessage = {
         document.getElementById("time")?.innerHTML = ClockMessage.fromJson(it.data as String).msg
@@ -19,7 +19,7 @@ fun clockPage() {
       }
     }
 
-  document.getElementById("inputfield")?.append {
+  document.getElementById("chatfield")?.append {
     input {
       onKeyPressFunction = { event ->
         val target = event.target

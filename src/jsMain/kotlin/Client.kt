@@ -1,3 +1,7 @@
+import EndPoint.ADDITEMS
+import EndPoint.BUTTONS
+import EndPoint.CHAT
+import EndPoint.CLOCK
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.html.div
@@ -10,8 +14,10 @@ fun main() {
     val path = URL(document.URL).pathname
     when (path) {
       "/" -> indexPage()
-      "/addItems" -> addItemsPage()
-      "/clock" -> clockPage()
+      BUTTONS.asPath() -> buttonsPage()
+      ADDITEMS.asPath() -> addItemsPage()
+      CLOCK.asPath() -> clockPage()
+      CHAT.asPath() -> chatPage()
       else -> {
       }
     }

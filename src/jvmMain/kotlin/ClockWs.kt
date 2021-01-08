@@ -1,3 +1,4 @@
+import EndPoint.CLOCK
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
@@ -9,8 +10,10 @@ import mu.KLogging
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.LinkedHashSet
 import kotlin.concurrent.timer
+import kotlin.time.Duration
 import kotlin.time.TimeSource
 import kotlin.time.seconds
 
@@ -28,7 +31,8 @@ object ClockWs : KLogging() {
       for (sessionContext in wsConnections)
         try {
           val current = LocalDateTime.now()
-          val formatted = current.format(formatter)
+          val elapsed = sessionContext.start.elapsedNow().format()
+          val formatted = "${current.format(formatter)} elapsed: $elapsed"
           val json = ClockMessage(formatted).toJson()
           runBlocking {
             sessionContext.wsSession.outgoing.send(Frame.Text(json))
@@ -40,7 +44,7 @@ object ClockWs : KLogging() {
   }
 
   fun Routing.clockWsEndpoint() {
-    webSocket("/clock") {
+    webSocket(CLOCK.asPath()) {
       val wsContext = SessionContext(this)
       try {
         outgoing.invokeOnClose {
@@ -65,5 +69,23 @@ object ClockWs : KLogging() {
   fun DefaultWebSocketServerSession.closeChannels() {
     outgoing.close()
     incoming.cancel()
+  }
+
+  fun Duration.format(includeMillis: Boolean = false): String {
+    val diff = toLongMilliseconds()
+    val day = TimeUnit.MILLISECONDS.toDays(diff)
+    val dayMillis = TimeUnit.DAYS.toMillis(day)
+    val hr = TimeUnit.MILLISECONDS.toHours(diff - dayMillis)
+    val hrMillis = TimeUnit.HOURS.toMillis(hr)
+    val min = TimeUnit.MILLISECONDS.toMinutes(diff - dayMillis - hrMillis)
+    val minMillis = TimeUnit.MINUTES.toMillis(min)
+    val sec = TimeUnit.MILLISECONDS.toSeconds(diff - dayMillis - hrMillis - minMillis)
+    val secMillis = TimeUnit.SECONDS.toMillis(sec)
+    val ms = TimeUnit.MILLISECONDS.toMillis(diff - dayMillis - hrMillis - minMillis - secMillis)
+
+    return if (includeMillis)
+      String.format("%d:%02d:%02d:%02d.%03d", day, hr, min, sec, ms)
+    else
+      String.format("%d:%02d:%02d:%02d", day, hr, min, sec)
   }
 }

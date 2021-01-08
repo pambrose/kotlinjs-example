@@ -1,23 +1,22 @@
+import AddItemsPage.addItemsPage
+import ButtonsPage.buttonsPage
+import ChatPage.chatPage
+import ChatWs.chatWsEndpoint
+import ClockPage.clockPage
 import ClockWs.clockWsEndpoint
+import EndPoint.ADDITEMS
+import EndPoint.BUTTONS
+import EndPoint.CHAT
+import EndPoint.CLOCK
+import HomePage.homePage
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.html.*
-import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.routing.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.websocket.*
-import kotlinx.html.HTML
-import kotlinx.html.a
-import kotlinx.html.body
-import kotlinx.html.button
-import kotlinx.html.div
-import kotlinx.html.head
-import kotlinx.html.id
-import kotlinx.html.onClick
-import kotlinx.html.script
-import kotlinx.html.title
 import mu.KLogging
 
 object Server : KLogging() {
@@ -30,94 +29,32 @@ object Server : KLogging() {
 
       routing {
         get("/") {
-          call.respondHtml(HttpStatusCode.OK) { homePage() }
+          call.respondHtml { homePage() }
         }
 
-        get("/addItems") {
-          call.respondHtml(HttpStatusCode.OK) { addItemsPage() }
+        get(BUTTONS.asPath()) {
+          call.respondHtml { buttonsPage() }
         }
 
-        get("/clock") {
-          call.respondHtml(HttpStatusCode.OK) { clockPage() }
+        get(ADDITEMS.asPath()) {
+          call.respondHtml { addItemsPage() }
+        }
+
+        get(CLOCK.asPath()) {
+          call.respondHtml { clockPage() }
+        }
+
+        get(CHAT.asPath()) {
+          call.respondHtml { chatPage() }
         }
 
         clockWsEndpoint()
+        chatWsEndpoint()
 
         static("/static") {
           files("build/distributions")
         }
       }
     }.start(wait = true)
-  }
-
-  fun HTML.homePage() {
-    head {
-      title("Hello from Ktor!")
-    }
-    body {
-      div {
-        id = "greeting"
-        +"Hello from Ktor"
-      }
-
-      div {
-        a { href = "/addItems"; +"Add Items" }
-      }
-
-      div {
-        a { href = "/clock"; +"Clock Page" }
-      }
-
-      button {
-        onClick = """kotlinjs.alertMe("alertMe() was pressed")"""
-        +"Alert me"
-      }
-
-      div {
-        id = "root"
-      }
-
-      script(src = "/static/jscode.js") {}
-    }
-  }
-
-  fun HTML.addItemsPage() {
-    head {
-      title("Add Items Page")
-    }
-    body {
-      div {
-        id = "root"
-      }
-
-      button {
-        onClick = """kotlinjs.goToUrl("/")"""
-        +"Go Back"
-      }
-
-      script(src = "/static/jscode.js") {}
-    }
-  }
-
-  fun HTML.clockPage() {
-    head {
-      title("Clock Page")
-    }
-    body {
-      div {
-        id = "time"
-      }
-
-      div {
-        id = "inputfield"
-      }
-
-      button {
-        onClick = """kotlinjs.goToUrl("/")"""
-        +"Go Back"
-      }
-
-      script(src = "/static/jscode.js") {}
-    }
   }
 }
