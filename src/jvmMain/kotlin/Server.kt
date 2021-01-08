@@ -12,11 +12,22 @@ import HomePage.homePage
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.html.*
+import io.ktor.http.*
 import io.ktor.http.content.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.websocket.*
+import kotlinx.css.CSSBuilder
+import kotlinx.css.Color
+import kotlinx.css.body
+import kotlinx.css.color
+import kotlinx.css.marginTop
+import kotlinx.css.px
+import kotlinx.html.CommonAttributeGroupFacade
+import kotlinx.html.FlowOrMetaDataContent
+import kotlinx.html.style
 import mu.KLogging
 
 object Server : KLogging() {
@@ -51,10 +62,42 @@ object Server : KLogging() {
         clockWsEndpoint()
         chatWsEndpoint()
 
+        get("/styles.css") {
+          call.respondCss {
+            body {
+              //backgroundColor = Color.red
+            }
+            rule("li") {
+              marginTop = 10.px
+              //backgroundColor = Color.green
+            }
+            rule(".backButton") {
+              marginTop = 20.px
+            }
+            rule("p.myclass") {
+              color = Color.blue
+            }
+          }
+        }
+
         static("/static") {
           files("build/distributions")
         }
       }
     }.start(wait = true)
+  }
+
+  fun FlowOrMetaDataContent.styleCss(builder: CSSBuilder.() -> Unit) {
+    style(type = ContentType.Text.CSS.toString()) {
+      +CSSBuilder().apply(builder).toString()
+    }
+  }
+
+  fun CommonAttributeGroupFacade.style(builder: CSSBuilder.() -> Unit) {
+    style = CSSBuilder().apply(builder).toString().trim()
+  }
+
+  suspend inline fun ApplicationCall.respondCss(builder: CSSBuilder.() -> Unit) {
+    respondText(CSSBuilder().apply(builder).toString(), ContentType.Text.CSS)
   }
 }

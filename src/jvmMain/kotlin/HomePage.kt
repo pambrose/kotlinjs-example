@@ -8,6 +8,7 @@ import kotlinx.html.body
 import kotlinx.html.h1
 import kotlinx.html.head
 import kotlinx.html.li
+import kotlinx.html.link
 import kotlinx.html.style
 import kotlinx.html.title
 import kotlinx.html.ul
@@ -16,6 +17,7 @@ object HomePage {
   fun HTML.homePage() {
     head {
       title("Hello from Ktor!")
+      link(rel = "stylesheet", href = "/styles.css", type = "text/css")
     }
 
     body {
