@@ -24,11 +24,9 @@ fun main() {
   }
 }
 
-@ExperimentalJsExport
 @JsExport
 fun foo() = "HeyThere"
 
-@ExperimentalJsExport
 @JsExport
 fun alertMe(msg: String) = window.alert(msg)
 
@@ -42,7 +40,6 @@ fun Node.sayHello() {
   }
 }
 
-@ExperimentalJsExport
 @JsExport
 fun goToUrl(url: String) {
   window.location.href = url

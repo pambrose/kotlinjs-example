@@ -6,6 +6,7 @@ val logback_version: String by project
 val logging_version: String by project
 val serialization_version: String by project
 val css_version: String by project
+val coroutines_version: String by project
 
 plugins {
   application
@@ -69,7 +70,7 @@ kotlin {
     val jvmMain by getting {
       dependencies {
         implementation("org.jetbrains:kotlin-css-jvm:$css_version")
-
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
         implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
         implementation("io.ktor:ktor-server-cio:$ktor_version")
         implementation("io.ktor:ktor-html-builder:$ktor_version")
@@ -106,6 +107,7 @@ kotlin {
           useExperimentalAnnotation("kotlin.time.ExperimentalTime")
           //useExperimentalAnnotation("io.ktor.util.KtorExperimentalAPI")
           useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
+          useExperimentalAnnotation("kotlin.js.ExperimentalJsExport")
         }
     }
   }
