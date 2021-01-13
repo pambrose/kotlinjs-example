@@ -2,10 +2,7 @@ import AddItemsPage.addItemsPage
 import ButtonsPage.buttonsPage
 import ClockPage.clockPage
 import ClockWs.clockWsEndpoint
-import EndPoint.ADDITEMS
-import EndPoint.BUTTONS
-import EndPoint.CLOCK
-import EndPoint.KEYSTROKE
+import EndPoint.*
 import HomePage.homePage
 import KeystrokeSpyPage.chatPage
 import KeystrokeSpyWs.chatWsEndpoint
@@ -19,20 +16,20 @@ import io.ktor.routing.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.websocket.*
-import kotlinx.css.CSSBuilder
-import kotlinx.css.Color
-import kotlinx.css.body
-import kotlinx.css.color
-import kotlinx.css.marginTop
-import kotlinx.css.px
+import kotlinx.css.*
 import mu.KLogging
+import org.slf4j.event.Level
 
 object Server : KLogging() {
 
   @JvmStatic
   fun main(args: Array<String>) {
     embeddedServer(CIO, port = 8080, host = "127.0.0.1") {
-      install(CallLogging)
+
+      install(CallLogging) {
+        level = Level.INFO
+      }
+
       install(WebSockets)
 
       routing {
