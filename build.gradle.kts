@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 
 val ktor_version: String by project
-val kotlin_version: String by project
 val logback_version: String by project
 val logging_version: String by project
 val serialization_version: String by project
@@ -10,8 +9,8 @@ val coroutines_version: String by project
 
 plugins {
   application
-  kotlin("multiplatform") version "1.4.30-M1"
-  kotlin("plugin.serialization") version "1.4.30-M1"
+  kotlin("multiplatform") version "1.4.30"
+  kotlin("plugin.serialization") version "1.4.30"
   id("com.github.ben-manes.versions") version "0.36.0"
 }
 
